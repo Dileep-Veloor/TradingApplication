@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.test.trading.messaging.consumer.TradingEventConsumer;
 import com.test.trading.messaging.domain.TradingEvent;
 import com.test.trading.messaging.domain.TradingEventType;
 import com.test.trading.persistence.entity.Event;
@@ -17,6 +20,8 @@ import com.test.trading.persistence.repository.PositionRepository;
 
 @Service
 public class TradingService {
+	
+    private static final Logger LOGGER = LoggerFactory.getLogger(TradingService.class);
 
 	private PositionRepository positionRepository;
 	private EventRepository eventRepository;
@@ -40,6 +45,7 @@ public class TradingService {
 		long updatedQuantity = calculateQuantity(tradingEvent, position.getTotalQuantity());
 		eventRepository.save(createEventEntity(tradingEvent));
 		position.setTotalQuantity(updatedQuantity);
+		positionRepository.save(position) ;
 	}
 	
 	private long calculateQuantity(TradingEvent tradingEvent, long currentQuantity) {
@@ -53,6 +59,7 @@ public class TradingService {
 	
 	private long executeSellEvent(TradingEvent tradingEvent, long currentQuantity) {
 		if(currentQuantity < tradingEvent.getQuantity()) {
+			LOGGER.error("Cannot process the sell event for trading Id {} ", tradingEvent.getIdentifier());
 			throw new TradingException("Cannot process sell the event since Total quantity is less");
 		}
 		return currentQuantity - tradingEvent.getQuantity();
@@ -62,6 +69,7 @@ public class TradingService {
 		if(eventList.size() == 1) {
 			return currentQuantity - eventList.get(0).getQuantity() ;
 		}else {
+			LOGGER.error("Cannot cancel the event for trading Id {} ", tradingEvent.getIdentifier());
 			throw new TradingException("Cannot cancel the event");
 		}
 	}

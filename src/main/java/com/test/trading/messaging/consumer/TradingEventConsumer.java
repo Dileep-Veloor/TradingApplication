@@ -20,6 +20,7 @@ public class TradingEventConsumer {
 	
 	@StreamListener("trading-input")
 	public void tradingInput(Message<TradingEvent> message) {
+		LOGGER.debug("Message Headers: {}" , message.getHeaders());
 		LOGGER.debug("Message Payload: {}" , message.getPayload());
 		tradingService.handleTradingEvent(message.getPayload());
 	}

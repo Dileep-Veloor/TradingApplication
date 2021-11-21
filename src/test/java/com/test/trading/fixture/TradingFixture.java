@@ -46,4 +46,8 @@ public class TradingFixture {
 				.tradingAccount(events[2]).securityIdentifier(events[3])
 				.quantity(Long.parseLong(events[4])).build();
 	}
+	
+	public static Position getSinglePosition() {
+		return new Position(new PositionIdentifier("AC1","ST1"),25);
+	}
 }
