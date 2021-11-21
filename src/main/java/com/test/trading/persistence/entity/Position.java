@@ -19,6 +19,7 @@ public class Position {
 	@Column(name="TOTAL_QUANTITY")
 	private long totalQuantity;
 	
+	//Added for optimistic locking 
 	@Column(name="VERSION")
 	@Version
 	private int version=0;

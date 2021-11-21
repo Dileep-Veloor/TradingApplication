@@ -25,10 +25,17 @@ Store both events and current positions in the data store. -> Opted for this. Si
 We need to Buy securities first before we even sell the securities
 Even if same event id comes for Buy/Sell or multiple events available, currently check is not done to avoid that. Depending on the requirement confirmation we need to change that.
 Exceptions handled for SELL and CANCEL events and logged as ERRORS for alerting. Also have not categorized as events which are retryable and non-retryable. All the events which throw exceptions will be retired 3 times and discarded.
+Have used the default acknowledge mechanism for the messages.
 Could add DLQ(Dead letter queue) to store the discarded message and have some processing logic based on those.
 Simple GET API is provided to get the position. As data grows this may be less performant, we can have either filter or paging introduced to reduced the volumes fetched. Or could have request based on account identifier as path variable.
 
 
-### Code improvements
+### Future enhancements
 Could move the logic around calculating quality to factory class. Introduce an interface and have 3 separate classes of Buy/Sell/Cancel and implement common method. By doing this if we have complicated logic, this can be moved out from the service class.
 Could add integration test with Embedded kafka for testing the listener.
+Could add correlation id in the kafka header to track the event across platforms.
+Could also user id/application id to store information along with created timestamp and updated timestamp across the entities to do the time tracking or auditing purpose.
+
+### Testing the application
+Currently main testing class for doing integration testing is TradingServiceIntegrationTest which uses springbootcontext to test from service layer.
+Since Embeddedkafka test is not completed that is the closest integration test in the application
