@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.Message;
+import org.springframework.stereotype.Component;
 
 import com.test.trading.messaging.domain.TradingEvent;
 import com.test.trading.service.TradingService;
 
+@Component
 public class TradingEventConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TradingEventConsumer.class);
